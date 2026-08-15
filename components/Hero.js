@@ -56,8 +56,11 @@ export default function Hero() {
           </div>
         </div>
 
-        <img src="/images/robiul.jpeg" alt="Md Robiul Islam" className="h-40 w-40 rounded-2xl object-cover border border-line" />
-
+        <img
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/images/robiul.jpeg`}
+          alt="Md Robiul Islam"
+          className="h-40 w-40 rounded-2xl object-cover border border-line"
+        />
       </div>
     </section>
   );
