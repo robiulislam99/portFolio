@@ -1,53 +1,46 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+import { sections } from "@/lib/content";
+import useActiveSection from "./useActiveSection";
 
-const STAGES = [
-  { id: "about", label: "SOURCE" },
-  { id: "experience", label: "INGEST" },
-  { id: "projects", label: "TRANSFORM" },
-  { id: "skills", label: "VALIDATE" },
-  { id: "achievements", label: "SERVE" },
-  { id: "contact", label: "SINK" },
-];
+const IDS = sections.map((s) => s.id);
+const WIDE = "(min-width: 1280px)";
 
+function subscribe(onChange) {
+  const mq = window.matchMedia(WIDE);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+const isWide = () => window.matchMedia(WIDE).matches;
+const notWideOnServer = () => false;
+
+// Fixed side rail that maps each section to a pipeline stage. It only mounts on
+// wide screens, where there is room beside the content column, so phones never
+// download-and-hydrate markup they can't see.
 export default function PipelineRail() {
-  const [activeId, setActiveId] = useState(STAGES[0].id);
+  const wide = useSyncExternalStore(subscribe, isWide, notWideOnServer);
+  if (!wide) return null;
+  return <Rail />;
+}
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveId(entry.target.id);
-        });
-      },
-      { rootMargin: "-40% 0px -50% 0px", threshold: 0 }
-    );
-
-    STAGES.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
+function Rail() {
+  const activeId = useActiveSection(IDS);
 
   return (
-    <nav
-      aria-label="Page sections, styled as a data pipeline"
-      className="fixed left-4 top-1/2 z-40 hidden -translate-y-1/2 lg:block"
-    >
+    <nav aria-label="Section progress" className="fixed left-5 top-1/2 z-40 -translate-y-1/2">
       <ol className="rail flex flex-col gap-7 pl-4">
-        {STAGES.map(({ id, label }) => {
+        {sections.map(({ id, stage }) => {
           const active = activeId === id;
           return (
             <li key={id}>
               <a
                 href={`#${id}`}
                 className="group flex items-center gap-3"
-                aria-current={active ? "true" : undefined}
+                aria-current={active ? "location" : undefined}
               >
                 <span
+                  aria-hidden="true"
                   className={`node-dot -ml-[21px] h-2.5 w-2.5 shrink-0 rounded-full border border-line bg-ink ${
                     active ? "active" : ""
                   }`}
@@ -57,7 +50,7 @@ export default function PipelineRail() {
                     active ? "text-cyan" : "text-text-dim group-hover:text-text"
                   }`}
                 >
-                  {label}
+                  {stage}
                 </span>
               </a>
             </li>

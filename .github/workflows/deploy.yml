@@ -22,19 +22,24 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - run: npm ci
 
-      # Leave NEXT_PUBLIC_BASE_PATH unset for a user/organization page
-      # (https://<username>.github.io/). For a project page
-      # (https://<username>.github.io/<repo>/), set it to "/<repo>" — either
-      # here directly or as a repository variable named NEXT_PUBLIC_BASE_PATH
-      # under Settings -> Secrets and variables -> Actions -> Variables.
+      # Reads this repository's Pages settings: base_path is "/<repo>" for a
+      # project page and empty for a user page or custom domain, and base_url
+      # is the full public address. A repository variable named
+      # NEXT_PUBLIC_BASE_PATH still takes precedence if you have set one.
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      - run: npm run lint
+
       - run: npm run build
         env:
-          NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH }}
+          NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH || steps.pages.outputs.base_path }}
+          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

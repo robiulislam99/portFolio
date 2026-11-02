@@ -1,50 +1,64 @@
-import { SectionLabel } from "./About";
+import { profile } from "@/lib/content";
+import CopyEmailButton from "./CopyEmailButton";
+import Section, { ExternalHint } from "./Section";
+import { GitHubIcon, LinkedInIcon, MailIcon, PhoneIcon } from "./icons";
 
 const CHANNELS = [
-  { label: "Email", value: "islamrobiul5444@gmail.com", href: "mailto:islamrobiul5444@gmail.com" },
-  { label: "Phone", value: "+880 1701 508229", href: "tel:+8801701508229" },
-  { label: "GitHub", value: "github.com/robiulislam99", href: "https://github.com/robiulislam99" },
-  { label: "LinkedIn", value: "linkedin.com/in/md-robiul-islam-a926aa206/", href: "https://linkedin.com/in/md-robiul-islam-a926aa206/" },
+  { label: "Email", value: profile.email, href: `mailto:${profile.email}`, Icon: MailIcon },
+  { label: "Phone", value: profile.phone.display, href: profile.phone.href, Icon: PhoneIcon },
+  { label: "GitHub", value: profile.github.display, href: profile.github.href, Icon: GitHubIcon },
+  { label: "LinkedIn", value: profile.linkedin.display, href: profile.linkedin.href, Icon: LinkedInIcon },
 ];
 
 export default function Contact() {
   return (
-    <section id="contact" className="mx-auto max-w-5xl px-6 py-20">
-      <SectionLabel index="06" title="Contact" />
-      <div className="mt-10 rounded-xl border border-line bg-panel/60 p-8 sm:p-10">
-        <p className="font-display text-2xl font-bold text-text sm:text-3xl">
-          Have a role, project or pipeline that needs building?
+    <Section id="contact" title="Have a role, project or pipeline that needs building?">
+      <div className="relative overflow-hidden rounded-2xl border border-line bg-panel/70 p-6 sm:p-10">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-cyan/10 blur-3xl"
+        />
+        <p className="relative max-w-2xl text-base leading-relaxed text-text-dim sm:text-[17px]">
+          I&apos;m based in {profile.location}, and open to software engineering and data engineering
+          roles. Reach out through any of the channels below.
         </p>
-        <p className="mt-3 max-w-xl text-[15px] text-text-dim">
-          I&apos;m based in Dhaka, Bangladesh, and open to software engineering and data
-          engineering roles. Reach out through any of the channels below.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-4">
-          {CHANNELS.map((c) => (
-            <a
-              key={c.label}
-              href={c.href}
-              target={c.href.startsWith("http") ? "_blank" : undefined}
-              rel={c.href.startsWith("http") ? "noreferrer" : undefined}
-              className="group flex items-center gap-2 rounded-lg border border-line px-4 py-2.5 font-mono text-[12px] text-text-dim transition-colors hover:border-cyan hover:text-cyan"
-            >
-              <span className="uppercase tracking-wide text-cyan/80 group-hover:text-cyan">
-                {c.label}
-              </span>
-              <span className="text-text-dim">·</span>
-              <span>{c.value}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
-export function Footer() {
-  return (
-    <footer className="border-t border-line/70 px-6 py-8 text-center font-mono text-[11px] text-text-dim">
-      © {new Date().getFullYear()} Md Robiul Islam · Built with Next.js
-    </footer>
+        <div className="relative mt-8 flex flex-wrap gap-3">
+          <a
+            href={`mailto:${profile.email}`}
+            className="inline-flex items-center gap-2 rounded-lg bg-cyan px-4 py-2.5 font-mono text-xs font-medium uppercase tracking-wide text-ink transition hover:bg-[#7ef0de]"
+          >
+            <MailIcon className="h-4 w-4" />
+            Email me
+          </a>
+          <CopyEmailButton email={profile.email} />
+        </div>
+
+        <ul className="relative mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {CHANNELS.map(({ label, value, href, Icon }) => {
+            const external = href.startsWith("http");
+            return (
+              <li key={label} className="min-w-0">
+                <a
+                  href={href}
+                  target={external ? "_blank" : undefined}
+                  rel={external ? "noopener noreferrer" : undefined}
+                  className="group flex items-center gap-4 rounded-xl border border-line bg-ink/40 p-4 transition-colors hover:border-cyan-dim hover:bg-ink/70"
+                >
+                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-line text-text-dim transition-colors group-hover:border-cyan-dim group-hover:text-cyan">
+                    <Icon className="h-[18px] w-[18px]" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-cyan">{label}</span>
+                    <span className="mt-0.5 block truncate text-[14px] text-text">{value}</span>
+                  </span>
+                  {external ? <ExternalHint /> : null}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </Section>
   );
 }

@@ -1,40 +1,25 @@
+import { about } from "@/lib/content";
+import Section from "./Section";
+
 export default function About() {
   return (
-    <section id="about" className="mx-auto max-w-5xl px-6 py-20">
-      <SectionLabel index="01" title="About" />
-      <div className="mt-6 grid gap-10 md:grid-cols-[1fr_1fr]">
-        <p className="font-display text-2xl leading-snug text-text sm:text-3xl">
-          I build the plumbing behind data-heavy products — ETL pipelines, search
-          infrastructure, and the APIs that sit on top of them.
-        </p>
-        <div className="space-y-4 text-[15px] leading-relaxed text-text-dim">
-          <p>
-            Currently a Software Engineer Intern at W3 Engineers Ltd., where I work on a
-            local data engineering pipeline: building ETL workflows with PySpark and
-            Apache Iceberg, and wiring up Elasticsearch, DynamoDB and Qdrant for search,
-            analytics and semantic similarity.
-          </p>
-          <p>
-            I graduated in Computer Science and Engineering from Khulna University of
-            Engineering and Technology (KUET), where my thesis tackled traffic sign
-            recognition under rain, fog, blur and low light using YOLO-based detection.
-            Outside of pipelines, I&apos;ve shipped full-stack apps in Next.js and Go, and
-            solved 500+ problems on Codeforces and LeetCode.
-          </p>
+    <Section id="about" title={about.title}>
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-14">
+        <div className="space-y-5 text-base leading-relaxed text-text-dim sm:text-[17px]">
+          {about.paragraphs.map((p) => (
+            <p key={p}>{p}</p>
+          ))}
         </div>
-      </div>
-    </section>
-  );
-}
 
-export function SectionLabel({ index, title }) {
-  return (
-    <div className="flex items-baseline gap-3">
-      <span className="font-mono text-xs text-cyan">{index}</span>
-      <h2 className="font-display text-sm font-bold uppercase tracking-[0.25em] text-text-dim">
-        {title}
-      </h2>
-      <span className="h-px flex-1 bg-line" />
-    </div>
+        <dl className="grid grid-cols-1 gap-px self-start overflow-hidden rounded-xl border border-line bg-line min-[420px]:grid-cols-2">
+          {about.facts.map((f) => (
+            <div key={f.label} className="bg-panel p-5">
+              <dt className="font-mono text-[11px] uppercase tracking-[0.16em] text-cyan">{f.label}</dt>
+              <dd className="mt-1.5 text-[15px] font-medium text-text">{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </Section>
   );
 }
