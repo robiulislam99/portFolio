@@ -1,58 +1,65 @@
-import { SectionLabel } from "./About";
-
-const ROLES = [
-  {
-    role: "Software Engineer Intern",
-    org: "W3 Engineers Ltd.",
-    period: "May 2026 — Present",
-    points: [
-      "Explored Python, Django, Next.js, Docker, and code-quality tooling (Ruff, SonarQube) alongside CI/CD practices during initial training.",
-      "Contributed to a local data engineering pipeline, building ETL workflows with PySpark, Apache Iceberg, Elasticsearch, DynamoDB and Qdrant for scalable processing, search and semantic similarity.",
-      "Developed and maintained containerized data pipelines, automated exports, image ranking and labeling, and data-quality workflows on Docker-based infrastructure.",
-    ],
-  },
-];
+import { education, experience } from "@/lib/content";
+import Section, { ChipList } from "./Section";
 
 export default function Experience() {
   return (
-    <section id="experience" className="mx-auto max-w-5xl px-6 py-20">
-      <SectionLabel index="02" title="Experience" />
-      <div className="mt-10 space-y-10">
-        {ROLES.map((r) => (
-          <article
-            key={r.role}
-            className="grid gap-4 rounded-xl border border-line bg-panel/60 p-6 md:grid-cols-[1fr_2.2fr] md:gap-8 md:p-8"
-          >
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-wide text-cyan">{r.period}</p>
-              <h3 className="mt-2 font-display text-xl font-bold text-text">{r.role}</h3>
-              <p className="text-text-dim">{r.org}</p>
-            </div>
-            <ul className="space-y-3 text-[15px] leading-relaxed text-text-dim">
+    <Section id="experience" title="Where I've worked and studied.">
+      <Timeline>
+        {experience.map((r) => (
+          <TimelineItem key={`${r.role}-${r.org}`} current={r.period.includes("Present")}>
+            <EntryHeader as="h3" title={r.role} subtitle={r.org} period={r.period} />
+            <ul className="mt-5 space-y-3 text-[15px] leading-relaxed text-text-dim">
               {r.points.map((p) => (
                 <li key={p} className="flex gap-3">
-                  <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-cyan" />
+                  <span aria-hidden="true" className="mt-[0.6rem] h-1 w-1 shrink-0 rounded-full bg-cyan" />
                   <span>{p}</span>
                 </li>
               ))}
             </ul>
-          </article>
+            <ChipList items={r.stack} label="Technologies used" className="mt-5" />
+          </TimelineItem>
         ))}
+      </Timeline>
 
-        <article className="grid gap-4 rounded-xl border border-line bg-panel/60 p-6 md:grid-cols-[1fr_2.2fr] md:gap-8 md:p-8">
-          <div>
-            <p className="font-mono text-[11px] uppercase tracking-wide text-cyan">2025</p>
-            <h3 className="mt-2 font-display text-xl font-bold text-text">
-              BSc in Computer Science &amp; Engineering
-            </h3>
-            <p className="text-text-dim">KUET, Khulna </p>
-          </div>
-          <p className="text-[15px] leading-relaxed text-text-dim">
-            Coursework and lab work in systems, databases and computer vision, capped by
-            a thesis on traffic sign recognition in adverse conditions (see below).
-          </p>
-        </article>
+      <h3 className="mt-14 font-mono text-xs uppercase tracking-[0.22em] text-text-dim">Education</h3>
+      <Timeline className="mt-6">
+        {education.map((e) => (
+          <TimelineItem key={e.degree}>
+            <EntryHeader as="h4" title={e.degree} subtitle={e.school} period={e.period} />
+            <p className="mt-4 text-[15px] leading-relaxed text-text-dim">{e.detail}</p>
+          </TimelineItem>
+        ))}
+      </Timeline>
+    </Section>
+  );
+}
+
+function Timeline({ children, className = "" }) {
+  return <ol className={`relative space-y-6 sm:ml-1 sm:border-l sm:border-line sm:pl-8 ${className}`}>{children}</ol>;
+}
+
+function TimelineItem({ children, current = false }) {
+  return (
+    <li className="relative">
+      <span
+        aria-hidden="true"
+        className={`absolute -left-[calc(2rem+5px)] top-7 hidden h-2.5 w-2.5 rounded-full border sm:block ${
+          current ? "border-cyan bg-cyan shadow-[0_0_0_4px_rgba(94,234,212,0.15)]" : "border-line bg-ink"
+        }`}
+      />
+      <article className="rounded-xl border border-line bg-panel/60 p-5 sm:p-7">{children}</article>
+    </li>
+  );
+}
+
+function EntryHeader({ as: Heading, title, subtitle, period }) {
+  return (
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+      <div>
+        <Heading className="font-display text-lg font-semibold text-text sm:text-xl">{title}</Heading>
+        <p className="mt-0.5 text-text-dim">{subtitle}</p>
       </div>
-    </section>
+      <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-cyan sm:pt-1.5">{period}</p>
+    </div>
   );
 }

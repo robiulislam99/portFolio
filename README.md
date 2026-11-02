@@ -1,17 +1,26 @@
 # Md Robiul Islam — Portfolio
 
-A Next.js portfolio built from the resume content, styled around a data-pipeline
-motif (fitting given the ETL/data engineering background). Static-exported so it
-can be hosted for free on GitHub Pages.
+A personal portfolio built with Next.js and Tailwind CSS, styled around a
+data-pipeline motif to match an ETL and data-engineering background. It is
+exported as static files and hosted on GitHub Pages.
 
 ## Features
 
-- Sections: Hero, About, Experience, Projects (+ thesis), Skills, Achievements, Contact
-- A left-hand "pipeline rail" that highlights the section you're viewing
-- **Add-your-photo option**: click the avatar in the hero section (or "upload_image()")
-  to upload a profile photo from your device. It's stored in your browser only
-  (localStorage), so it's private and persists on that device/browser.
-  For a photo that's baked into the site for every visitor, see below.
+- **Sections:** Hero, About, Experience and Education, Projects (with thesis),
+  Skills, Achievements and Contact.
+- **Responsive from 320 px up:** a full-screen menu on phones and tablets, a
+  two-column hero on desktop, and a side "pipeline rail" on wide screens that
+  tracks the section you're reading.
+- **Accessible:** skip link, visible keyboard focus, labelled navigation,
+  correct heading order, and reduced-motion support. Lighthouse accessibility
+  score is 100.
+- **Search and sharing:** title, description, canonical URL, Open Graph and
+  Twitter cards with a 1200×630 preview image, schema.org `Person` data, and
+  favicons.
+- **Fast:** system fonts, a resized WebP portrait, and lazy rendering of
+  sections below the fold. Lighthouse scores 97–98 on mobile and 100 on desktop.
+- **Small touches:** copy-email button, styled 404 page, and an optional résumé
+  button.
 
 ## Run locally
 
@@ -22,70 +31,89 @@ npm run dev
 
 Open http://localhost:3000.
 
-## Add a permanent profile photo (optional)
+```bash
+npm run lint    # ESLint (Next.js core-web-vitals rules)
+npm run build   # static export into out/
+```
 
-The in-browser upload is per-device and doesn't ship with the site. To bake a
-photo into the site for everyone:
+## Edit the content
 
-1. Add your image as `public/images/profile.jpg`.
-2. In `components/Hero.js`, replace `<ProfileImage />` with:
-   ```jsx
-   <img src="/images/profile.jpg" alt="Md Robiul Islam" className="h-40 w-40 rounded-2xl object-cover border border-line" />
-   ```
+All of the text lives in **`lib/content.js`**: profile and contact links,
+About, Experience, Education, Projects, Skills and Achievements. Edit that one
+file; the components read from it.
 
-## Add your LinkedIn link
+### Add a résumé button
 
-Open `components/Contact.js` and uncomment/edit the LinkedIn line in the
-`CHANNELS` array with your actual profile URL.
+1. Put the PDF at `public/resume.pdf`.
+2. In `lib/content.js`, set `resume: "/resume.pdf"`.
 
-## Host it on GitHub Pages
+A "Résumé" button then appears in the hero.
 
-This repo is already configured for a static export (`output: 'export'` in
-`next.config.mjs`) and includes a ready-to-use GitHub Actions workflow at
-`.github/workflows/deploy.yml`.
+### Change the photo
 
-1. **Create a GitHub repo** and push this project:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial portfolio"
-   git branch -M main
-   git remote add origin https://github.com/robiulislam99/<your-repo-name>.git
-   git push -u origin main
-   ```
+The hero uses `public/images/robiul-600.webp`, a 600 px wide copy of
+`public/images/robiul.jpeg`. To use a new photo, replace that WebP with any
+portrait about 600 px wide. Keep the same file name, or update the import at the
+top of `components/Hero.js`.
 
-2. **Enable Pages**: in the repo, go to **Settings → Pages**, and under
-   "Build and deployment" set **Source** to **GitHub Actions**.
+### Social preview image and icons
 
-3. **Set the base path** (only if this is a *project* page, i.e. your repo is
-   not named `robiulislam99.github.io`):
-   - Go to **Settings → Secrets and variables → Actions → Variables**.
-   - Add a variable named `NEXT_PUBLIC_BASE_PATH` with value `/<your-repo-name>`
-     (e.g. `/portfolio`).
-   - Skip this step entirely if your repo is named `robiulislam99.github.io`
-     (a user page, served from the domain root).
+- `app/opengraph-image.png` (1200×630) is the card shown when the link is shared
+  on LinkedIn, Slack, WhatsApp and similar apps. Its alt text is in
+  `app/opengraph-image.alt.txt`. It's a static image, so replace it if your name,
+  title or photo changes.
+- `app/icon.svg` is the browser-tab icon, and `app/apple-icon.png` is the iOS
+  home-screen icon.
 
-4. **Push to `main`** (or run the workflow manually from the Actions tab).
-   The workflow builds the site and deploys the `out/` folder to Pages.
+## Deploy to GitHub Pages
 
-5. Your site will be live at:
-   - User page: `https://robiulislam99.github.io/`
-   - Project page: `https://robiulislam99.github.io/<your-repo-name>/`
+The workflow at `.github/workflows/deploy.yml` lints, builds and deploys on every
+push to `main`.
 
-### Manual alternative (no GitHub Actions)
+1. In the repository, open **Settings → Pages** and set **Source** to
+   **GitHub Actions**. This only needs doing once.
+2. Push to `main`, or run the workflow from the **Actions** tab.
+
+The workflow reads the Pages settings itself, so it works without extra
+configuration in each of these cases:
+
+| Repository                 | Site address                                 |
+| -------------------------- | -------------------------------------------- |
+| `portfolio` (project page) | `https://robiulislam99.github.io/portfolio/` |
+| `robiulislam99.github.io`  | `https://robiulislam99.github.io/`           |
+| Custom domain              | `https://your-domain/`                       |
+
+From those settings it sets `NEXT_PUBLIC_BASE_PATH`, the sub-path the site is
+served from, and `NEXT_PUBLIC_SITE_URL`, the full address used in canonical and
+social-preview links. A repository variable named `NEXT_PUBLIC_BASE_PATH` still
+overrides the detected base path if you set one.
+
+### Build for a sub-path by hand
 
 ```bash
-npm run build            # or: NEXT_PUBLIC_BASE_PATH=/<repo-name> npm run build
-npx gh-pages -d out
+NEXT_PUBLIC_BASE_PATH=/portfolio NEXT_PUBLIC_SITE_URL=https://robiulislam99.github.io/portfolio npm run build
 ```
-This pushes the exported `out/` folder to a `gh-pages` branch; point GitHub
-Pages at that branch under **Settings → Pages → Source → Deploy from a branch**.
 
 ## Project structure
 
 ```
-app/            Next.js App Router entry (layout.js, page.js, globals.css)
-components/     Section components (Hero, About, Experience, Projects, Skills,
-                Achievements, Contact, Nav, PipelineRail, ProfileImage)
-public/images/  Static assets — put profile.jpg / project screenshots here
+app/
+  layout.js            Page shell, metadata, skip link
+  page.js              Section order, structured data
+  globals.css          Colour tokens, fonts, base styles
+  not-found.js         404 page
+  icon.svg, apple-icon.png, opengraph-image.png
+components/
+  Nav.js               Sticky header and mobile menu
+  PipelineRail.js      Side section tracker (wide screens)
+  Hero.js, About.js, Experience.js, Projects.js, Skills.js,
+  Achievements.js, Contact.js, Footer.js
+  Section.js           Shared section wrapper and chip list
+  CopyEmailButton.js   Copy-to-clipboard button
+  icons.js             Inline SVG icons
+  useActiveSection.js  Tracks which section is on screen
+lib/
+  content.js           All site copy: edit this to update the portfolio
+  site.js              Base path and public site URL
+public/images/         Profile photo
 ```

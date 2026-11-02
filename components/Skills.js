@@ -1,35 +1,18 @@
-import { SectionLabel } from "./About";
-
-const GROUPS = [
-  { label: "Languages", items: ["Python", "Go", "Java", "C++", "C", "SQL"] },
-  {
-    label: "Frameworks",
-    items: ["Django", "Django REST Framework", "Go (Beego)", "Next.js", "React", "Tailwind CSS"],
-  },
-  {
-    label: "Databases",
-    items: ["PostgreSQL", "PostGIS", "MySQL", "SQLite", "Apache Iceberg", "Qdrant"],
-  },
-  { label: "Data Engineering", items: ["PySpark", "Elasticsearch", "Kibana"] },
-  {
-    label: "Tools",
-    items: ["Docker", "Git", "GitHub Actions", "Playwright", "Pytest", "Scrapy", "Ruff", "SonarQube"],
-  },
-];
+import { skills } from "@/lib/content";
+import Section from "./Section";
 
 export default function Skills() {
   return (
-    <section id="skills" className="mx-auto max-w-5xl px-6 py-20">
-      <SectionLabel index="04" title="Skills" />
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {GROUPS.map((g) => (
-          <div key={g.label} className="rounded-xl border border-line bg-panel/60 p-6">
-            <p className="font-mono text-[11px] uppercase tracking-wide text-cyan">{g.label}</p>
-            <ul className="mt-3 flex flex-wrap gap-2">
+    <Section id="skills" title="Tools I work with.">
+      <div className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-panel/60">
+        {skills.map((g) => (
+          <div key={g.label} className="grid gap-3 p-5 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-6 sm:p-6">
+            <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-cyan sm:pt-1.5">{g.label}</h3>
+            <ul className="flex flex-wrap gap-2">
               {g.items.map((item) => (
                 <li
                   key={item}
-                  className="rounded-md border border-line px-2.5 py-1 text-[13px] text-text-dim"
+                  className="rounded-md border border-line bg-ink/40 px-2.5 py-1 text-[13px] text-text transition-colors hover:border-cyan-dim"
                 >
                   {item}
                 </li>
@@ -38,6 +21,6 @@ export default function Skills() {
           </div>
         ))}
       </div>
-    </section>
+    </Section>
   );
 }

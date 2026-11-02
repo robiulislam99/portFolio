@@ -1,70 +1,55 @@
-import { SectionLabel } from "./About";
-
-const PROJECTS = [
-  {
-    name: "Booking Lake",
-    tag: "Data Pipeline",
-    stack: "PySpark · Apache Iceberg · Docker · Elasticsearch · DynamoDB · Qdrant",
-    description:
-      "Dockerized ETL pipeline for Booking.com-style data processing, with search, analytics and semantic similarity layered on top. CI/CD and code quality automated with Ruff and SonarQube.",
-    href: "https://github.com/robiulislam99/booking-lake",
-  },
-  {
-    name: "TravelSphere",
-    tag: "Web App",
-    stack: "Go · Beego · REST · Session Auth",
-    description:
-      "Travel discovery app with country exploration, attractions and weather integration. RESTful APIs, session-based auth, AJAX UI updates, modular MVC, 90%+ controller test coverage.",
-    href: "https://github.com/robiulislam99/TravelSphere",
-  },
-  {
-    name: "KenaKata",
-    tag: "E-Commerce",
-    stack: "Next.js 15 · TypeScript · Tailwind · Zustand · Zod",
-    description:
-      "Production-style storefront on the Next.js App Router with SSR/ISR/SSG. Product browsing, cart, checkout, auth, and a role-protected admin dashboard; Vitest for quality.",
-    href: "https://github.com/robiulislam99/kenakata-online-store-nextjs",
-  },
-];
+import { projects, thesis } from "@/lib/content";
+import Section, { ChipList, ExternalHint } from "./Section";
+import { ArrowUpRightIcon } from "./icons";
 
 export default function Projects() {
   return (
-    <section id="projects" className="mx-auto max-w-5xl px-6 py-20">
-      <SectionLabel index="03" title="Projects" />
-      <div className="mt-10 grid gap-6 md:grid-cols-3">
-        {PROJECTS.map((p) => (
-          <a
-            key={p.name}
-            href={p.href}
-            target="_blank"
-            rel="noreferrer"
-            className="group flex flex-col rounded-xl border border-line bg-panel/60 p-6 transition-colors hover:border-cyan-dim"
-          >
-            <span className="w-fit rounded-full border border-line px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-cyan">
-              {p.tag}
-            </span>
-            <h3 className="mt-4 font-display text-lg font-bold text-text group-hover:text-cyan">
-              {p.name}
-            </h3>
-            <p className="mt-2 flex-1 text-[14px] leading-relaxed text-text-dim">
-              {p.description}
-            </p>
-            <p className="mt-4 font-mono text-[11px] text-text-dim">{p.stack}</p>
-          </a>
+    <Section id="projects" title="Selected projects.">
+      <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {projects.map((p) => (
+          <li key={p.name} className="flex">
+            <article className="group relative flex w-full flex-col rounded-xl border border-line bg-panel/60 p-6 transition duration-200 hover:-translate-y-0.5 hover:border-cyan-dim hover:bg-panel has-[a:focus-visible]:border-cyan motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+              <div className="flex items-center justify-between gap-3">
+                <span className="rounded-full border border-line px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-cyan">
+                  {p.tag}
+                </span>
+                <span className="text-text-dim transition-colors group-hover:text-cyan" aria-hidden="true">
+                  <ArrowUpRightIcon className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </span>
+              </div>
+              <h3 className="mt-5 font-display text-lg font-semibold text-text">
+                <a
+                  href={p.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none"
+                >
+                  {p.name}
+                  <ExternalHint />
+                </a>
+              </h3>
+              <p className="mt-2 flex-1 text-[14px] leading-relaxed text-text-dim">{p.description}</p>
+              <ChipList items={p.stack} label="Tech stack" className="mt-5" />
+              <p className="mt-5 inline-flex items-center gap-2 border-t border-line/70 pt-4 font-mono text-[11px] uppercase tracking-wide text-text-dim transition-colors group-hover:text-cyan">
+                View source on GitHub
+              </p>
+            </article>
+          </li>
         ))}
-      </div>
 
-      <div className="mt-6 rounded-xl border border-dashed border-line p-6">
-        <span className="font-mono text-[10px] uppercase tracking-wide text-amber">Thesis</span>
-        <h3 className="mt-2 font-display text-lg font-bold text-text">
-          Traffic Sign Recognition in Adverse Conditions
-        </h3>
-        <p className="mt-2 text-[14px] leading-relaxed text-text-dim">
-          A YOLO-based detection system built to hold up under rain, fog, blur, low light
-          and occlusion — with a custom dataset annotation pipeline and augmentation
-          techniques to close the gap with real-world conditions.
-        </p>
-      </div>
-    </section>
+        <li className="flex md:col-span-1 lg:col-span-3">
+          <article className="relative flex w-full flex-col overflow-hidden rounded-xl border border-dashed border-amber/35 bg-panel/40 p-6 lg:flex-row lg:items-start lg:gap-10 lg:p-8">
+            <div className="lg:w-2/5 lg:shrink-0">
+              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-amber">{thesis.tag}</span>
+              <h3 className="mt-3 font-display text-lg font-semibold text-text lg:text-xl">{thesis.name}</h3>
+            </div>
+            <div className="mt-2 flex-1 lg:mt-0">
+              <p className="text-[14px] leading-relaxed text-text-dim">{thesis.description}</p>
+              <ChipList items={thesis.stack} label="Topics" className="mt-5" />
+            </div>
+          </article>
+        </li>
+      </ul>
+    </Section>
   );
 }

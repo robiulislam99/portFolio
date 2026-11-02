@@ -1,10 +1,9 @@
 /** @type {import('next').NextConfig} */
 
-// When deploying to https://<user>.github.io/<repo>/ (a project page, not a
-// user/organization page), GitHub serves the site from a sub-path. Set
-// NEXT_PUBLIC_BASE_PATH to "/<repo>" (e.g. "/portfolio") via a repo variable
-// or directly below before building. Leave it empty for a user/organization
-// page (https://<user>.github.io/).
+// A GitHub project page (https://<user>.github.io/<repo>/) is served from a
+// sub-path. The deploy workflow sets NEXT_PUBLIC_BASE_PATH from the repo's
+// Pages settings automatically; locally it is empty, so the site runs at
+// http://localhost:3000/.
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 const nextConfig = {
